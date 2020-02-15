@@ -1,0 +1,8 @@
+--index-url=https://pypi.python.org/simple
+aiohttp==3.6.2
+aiohttp_cors
+prometheus_async
+prometheus_client
+python-dateutil
+structlog==20.1.0
+uvloop
