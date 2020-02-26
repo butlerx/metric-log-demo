@@ -1,5 +1,5 @@
 """
-events API
+beers API
 """
 from json import JSONDecodeError
 from typing import Any, Dict
@@ -12,7 +12,7 @@ from .base import REQ_TIME, APIBase
 from .error import api_error
 
 
-class EventAPI(APIBase):
+class BeerAPI(APIBase):
     def add_routes(self):
         self.router.add_get("/{id}", self.get)
         self.router.add_patch("/{id}", self.patch)
@@ -38,18 +38,17 @@ class EventAPI(APIBase):
         """
         trace = LoggingContext(request=request)
         id = request.match_info.get("id")
-        trace.update(id=id)
+        trace.service.update(id=id)
         entry = await self.store.get(id, trace=trace)
         if not entry:
             return await self.notFound()
 
         try:
             patch = await request.json()
-            trace.update(patch=patch)
+            trace.service.update(patch=patch)
             event: Dict[str, Any] = {}
             event.update(patch)
-            event.update({"id": id})  # Make sure we don't overwrite the ID
-            trace.update(event=event)
+            trace.service.update(event=event)
             event = await self.store.update(id, event, trace=trace)
             return web.json_response(event)
         except JSONDecodeError:
@@ -64,7 +63,7 @@ class EventAPI(APIBase):
         """
         trace = LoggingContext(request=request)
         id = request.match_info.get("id")
-        trace.update(id=id)
+        trace.service.update(id=id)
         entry = await self.store.get(id, trace=trace)
         if not entry:
             return await self.notFound()

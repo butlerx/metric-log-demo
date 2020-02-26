@@ -1,4 +1,6 @@
-from typing import Any, Dict
+from sys import exc_info
+from traceback import format_exc
+from typing import Any, Dict, Union
 from uuid import uuid4
 
 from aiohttp.web import Request, Response
@@ -43,17 +45,26 @@ class LoggingContext:
         else:
             self.url = {}
             self.source = {}
+        self.error: Dict[str, str] = {}
+        self.service: Dict[str, Union[str, dict]] = {}
 
     def for_logging(self) -> dict:
         return {
-            key: self.clean(value) for key, value in self.__dict__.items() if len(value)
+            key: self._clean(value)
+            for key, value in self.__dict__.items()
+            if len(value)
         }
 
-    def clean(self, data):
+    def _clean(self, data):
         new_data = {}
         for k, v in data.items():
             if isinstance(v, dict):
-                v = self.clean(v)
+                v = self._clean(v)
             if v not in ("", None, {}):
                 new_data[k] = v
         return new_data
+
+    def capture_error(self):
+        exi = exc_info()
+        if exi is not None:
+            self.error = dict(msg=str(exi[1]), stack_trace=format_exc())

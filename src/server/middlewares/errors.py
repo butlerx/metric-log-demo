@@ -26,13 +26,13 @@ def errors() -> Callable:
             return response
         except HTTPException as httpEx:
             trace.http.update(response={"status": httpEx.status, "body": httpEx.body})
+            trace.capture_error()
             logger.error("error handling web request", **trace.for_logging())
             return await api_error(httpEx.status)
-        except Exception as err:
+        except Exception:
             trace.http.update(response={"status": 500})
-            logger.error(
-                "error handling web request", err=str(err), **trace.for_logging()
-            )
+            trace.capture_error()
+            logger.error("error handling web request", **trace.for_logging())
             return await api_error(500)
 
     return middleware_handler
