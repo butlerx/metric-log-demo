@@ -26,7 +26,7 @@ class BeerAPI(APIBase):
         Retrieves a specific event entry from the store.
         """
         trace = LoggingContext(request=request)
-        entry = await self.store.get(request.match_info.get("id"), trace=trace)
+        entry = await self.store.get(int(request.match_info.get("id")), trace=trace)
         return web.json_response(entry) if entry else await self.notFound()
 
     @time(REQ_TIME.labels("PATCH", "/api/v1/event/:id"))
