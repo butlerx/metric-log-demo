@@ -22,8 +22,6 @@ scrape_configs:
     scrape_interval: 5s
     dns_sd_configs:
       - names:
-          - 'metric-log-demo.server'
+          - 'server'
         type: 'A'
-        port: 8000
-    static_configs:
-      - targets: ['server:8000']
+        port: 5000

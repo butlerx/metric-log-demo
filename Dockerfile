@@ -1,6 +1,6 @@
 FROM python:3-alpine
 
-EXPOSE 8000
+EXPOSE 5000
 
 RUN apk add --update \
     build-base \
@@ -11,7 +11,7 @@ COPY requirements.txt /src/requirements.txt
 RUN ["pip", "install", "-r", "/src/requirements.txt"]
 
 COPY health.py /health.py
-HEALTHCHECK --interval=5s --timeout=1s --retries=3 CMD python /health.py localhost:8000
+HEALTHCHECK --interval=5s --timeout=1s --retries=3 CMD python /health.py localhost:5000
 
 COPY src /src
 
