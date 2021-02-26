@@ -1,5 +1,5 @@
 --index-url=https://pypi.python.org/simple
-aiohttp==3.6.2
+aiohttp==3.7.4
 aiohttp_cors
 prometheus_async
 prometheus_client
